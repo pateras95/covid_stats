@@ -106,7 +106,6 @@ if (isset($_POST['search_reg'])) {
     $total_vaccinated = mysqli_real_escape_string($db, $_POST['total_vaccinated']);
     $fully_vaccinated = mysqli_real_escape_string($db, $_POST['fully_vaccinated']);
     $doses_administered = mysqli_real_escape_string($db, $_POST['doses_administered']);
-    echo "Today is " . date("d/m/Y") . "<br>";
     $query = "INSERT INTO vaccinations ( date, total_vaccinated , fully_vaccinated , doses_administered)
   			  VALUES('$date','$total_vaccinated', '$fully_vaccinated', '$doses_administered')";
     mysqli_query($db, $query);

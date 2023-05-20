@@ -31,7 +31,7 @@
         .above-all {
             display: flex;
             flex-direction: column;
-            row-gap: 1rem;
+            row-gap: 0.4rem;
             position: absolute;
             width: 100%;
             height: 100%;
@@ -63,7 +63,7 @@
             position: relative !important;
             font-size: 18px !important;
             width: 50%;
-            margin: 25px auto;
+            margin: 25px auto 0px auto;
             display: flex;
             flex-direction: column;
             text-align: justify;
@@ -73,18 +73,18 @@
             z-index: 2;
         }
 
-        .infos-container2 {
+        .infos-chart-container {
+            position: relative !important;
             font-size: 18px !important;
             width: 50%;
-            margin: 10px auto;
-            left: 25%;
+            margin: 5px auto;
             display: flex;
             flex-direction: column;
             text-align: justify;
             justify-content: center;
             color: #162a43;
             align-items: center;
-            top: 2080px;
+            z-index: 2;
         }
 
         .title {
@@ -93,6 +93,33 @@
 
         .custom-form {
             display: none;
+        }
+
+        .test {
+            position: relative;
+        }
+
+        .sumbit-button {
+            border: 2px solid #162a43;
+            background: #162a43;
+            color: #fff;
+            font-size: 15px !important;
+            padding: 5px;
+            border-radius: 10px;
+            width: 280px;
+        }
+
+        .input-custom {
+            border: 2px solid #162a43;
+            font-size: 15px !important;
+            padding: 5px;
+            border-radius: 10px;
+            width: 280px;
+        }
+
+        .chart-graph {
+            position: relative !important;
+            margin: 0 auto;
         }
 
         .chart-filters {
@@ -107,6 +134,18 @@
         .value_text {
             color: green;
             font-weight: 700;
+        }
+
+        @media screen and (max-width: 997px) {
+            .chart-filters {
+                flex-direction: column;
+                margin-bottom: 220px;
+                row-gap: 0.2rem;
+            }
+
+            .chart-graph {
+                margin: 200px auto;
+            }
         }
     </style>
 </head>
@@ -147,7 +186,7 @@
             tristique leo. Praesent nec facilisis turpis. Praesent sit amet velit vitae libero mollis efficitur.
             Praesent rutrum erat quis facilisis dapibus. Curabitur nec tempus nibh, ac eleifend turpis.
         </div>
-        <div class="infos-container" id="contact">
+        <div class="infos-chart-container" id="contact">
             <p>Below you can find some graphs and you can change the graphs base on filters.</p>
         </div>
         <?php
@@ -171,19 +210,19 @@
             // output data of each row
             echo "<form action='#' method='post'>";
             echo '<div class="chart-filters">';
-            echo "<input type='date'  name='date' id='date'>";
-            echo "<select name='options'>                      
+            echo "<input class='input-custom' type='date'  name='date' id='date'>";
+            echo "<select class='input-custom' name='options'>                      
                 <option value='total_vaccinated'>Total Vaccinated</option>
                 <option value='fully_vaccinated'>Fully Vaccinated</option>
                 <option value='doses_administered'>Doses Administered</option>
                 </select>";
-            echo "<select name='options_charts'> 
-                <option value='chart'>Γράφημα</option>    
+            echo "<select class='input-custom' name='options_charts'> 
+                <option value='chart'>Charts</option>    
                 <option value='pie'>Pie Chart</option>
                 <option value='donut'>Donut Chart</option>
                 <option value='geo'>Geo Chart</option>
-                </select></center>";
-            echo "<center><input class='pure-button pure-button-primary' type='submit' name='submit' value='Εμφάνιση Διαγραμμάτων'/></center>";
+                </select>";
+            echo "<input class='sumbit-button' type='submit' name='submit' value='Display New Charts'/>";
             echo "</div>";
             echo "</form>";
         } else {
@@ -195,9 +234,66 @@
             $selected_date = $_POST['date'];
             $selected_val_chart = $_POST['options_charts'];
             // echo "You have selected :" . $selected_val_chart;  // Displaying Selected Value
-            echo "You have selected :" . $selected_date;  // Displaying Selected Value
+            // echo "You have selected :" . $selected_date;  // Displaying Selected Value
         }
         ?>
+        <div class="chart-graph" id="piechart"></div>
+
+
+        <script type="text/javascript">
+            google.charts.load('current', {
+                'packages': ['corechart']
+            });
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'date');
+                data.addColumn('number', 'total_vaccinated');
+                data.addColumn('number', 'fully_vaccinated');
+
+                <?php
+                $sql = "SELECT `date`, `total_vaccinated`, `fully_vaccinated` FROM vaccinations";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "data.addRow(['" . $row["date"] . "', " . $row["total_vaccinated"] . ", " . $row["fully_vaccinated"] . "]);";
+                    }
+                } else {
+                    echo "data.addRow(['No data', 0, 0]);"; // Provide a default row when there are no results
+                }
+                ?>
+
+                var options = {
+                    title: 'All',
+                    width: 900,
+                    height: 500,
+                    curveType: 'function',
+                    hAxis: {
+                        title: 'date',
+                        titleTextStyle: {
+                            color: '#333'
+                        },
+                        slantedText: true,
+                        slantedTextAngle: 45
+                    },
+                    series: {
+                        0: {
+                            color: '#1f77b4'
+                        }, // Color for the total_vaccinated series
+                        1: {
+                            color: '#ff7f0e'
+                        } // Color for the fully_vaccinated series
+                    },
+                    pointSize: 5, // Increase the size of the data points
+                    lineWidth: 2, // Increase the width of the line
+                    curveType: 'function'
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('piechart'));
+                chart.draw(data, options);
+            }
+        </script>
 
         <?php
         if (isset($_POST['submit'])) {
@@ -232,7 +328,9 @@
                             title: 'Chart',
                             width: 900,
                             height: 500,
-                            curveType: 'function'
+                            curveType: 'function',
+                            pointSize: 5, // Increase the size of the data points
+                            lineWidth: 2, // Increase the width of the line
                         };
 
                         var chart = new google.visualization.LineChart(document.getElementById('piechart'));
@@ -244,19 +342,10 @@
             }
         }
         ?>
-        <div id="piechart"></div>
-        </main>
         <form class="custom-form" method="post" id="covid_sumbit" action="index.php">
             <div id="chart_div"></div>
             <input type="submit" class="pure-button pure-button-primary" name="search_reg" value="Καταχώρηση στην Βάση">
         </form>
-        <!-- <div class="infos-container2">
-            <h1 id="down">Some Infos</h1>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget arcu et enim mattis tristique. Nullam a
-            leo aliquet, tincidunt nibh sit amet, pellentesque mauris. Nunc quis tellus posuere, fermentum felis at,
-            tristique leo. Praesent nec facilisis turpis. Praesent sit amet velit vitae libero mollis efficitur.
-            Praesent rutrum erat quis facilisis dapibus. Curabitur nec tempus nibh, ac eleifend turpis.
-        </div> -->
     </div>
 
     <script>

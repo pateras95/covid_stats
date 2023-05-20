@@ -290,7 +290,7 @@
                     curveType: 'function'
                 };
 
-                var chart = new google.visualization.LineChart(document.getElementById('piechart'));
+                var chart = new google.visualization.AreaChart(document.getElementById('piechart'));
                 chart.draw(data, options);
             }
         </script>
@@ -308,10 +308,10 @@
                     function drawChart() {
 
                         var data = google.visualization.arrayToDataTable([
-                            ['Country', 'Something'],
+                            ['Country', "<?php echo $selected_val ?>" ],
                             <?php
                             if (isset($_POST['submit'])) {
-                                $sql = "SELECT `date`,`$selected_val` FROM vaccinations WHERE `date`>'$selected_date'";
+                                $sql = "SELECT `date`,`$selected_val` FROM vaccinations WHERE `date`>='$selected_date'";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
@@ -330,7 +330,7 @@
                             height: 500,
                             curveType: 'function',
                             pointSize: 5, // Increase the size of the data points
-                            lineWidth: 2, // Increase the width of the line
+                            lineWidth: 2, // Increase the width of the line,
                         };
 
                         var chart = new google.visualization.LineChart(document.getElementById('piechart'));

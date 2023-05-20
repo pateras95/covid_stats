@@ -268,7 +268,6 @@
                     title: 'All',
                     width: 900,
                     height: 500,
-                    curveType: 'function',
                     hAxis: {
                         title: 'date',
                         titleTextStyle: {
@@ -276,6 +275,12 @@
                         },
                         slantedText: true,
                         slantedTextAngle: 45
+                    },
+                    vAxis: {
+                        viewWindow: {
+                            min: 5561000000,
+                            max: 5590000000
+                        }
                     },
                     series: {
                         0: {
@@ -287,7 +292,6 @@
                     },
                     pointSize: 5, // Increase the size of the data points
                     lineWidth: 2, // Increase the width of the line
-                    curveType: 'function'
                 };
 
                 var chart = new google.visualization.AreaChart(document.getElementById('piechart'));
@@ -308,7 +312,7 @@
                     function drawChart() {
 
                         var data = google.visualization.arrayToDataTable([
-                            ['Country', "<?php echo $selected_val ?>" ],
+                            ['Country', "<?php echo $selected_val ?>"],
                             <?php
                             if (isset($_POST['submit'])) {
                                 $sql = "SELECT `date`,`$selected_val` FROM vaccinations WHERE `date`>='$selected_date'";

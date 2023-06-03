@@ -24,7 +24,7 @@
             text-align: center;
         }
 
-        div {
+        main {
             position: absolute;
         }
 
@@ -39,12 +39,14 @@
         }
 
         .values-container {
+            border: 2px dotted #162a43;
             background: #fff;
             position: relative !important;
             font-size: 18px !important;
             width: 100%;
+            padding: 15px;
             text-transform: uppercase;
-            margin: 15px auto;
+            margin: 15px auto 0px auto;
             display: flex;
             text-align: center;
             justify-content: center;
@@ -87,6 +89,13 @@
             z-index: 2;
         }
 
+        .info-values-container{
+            display: flex !important;
+            justify-content: center;
+            column-gap: 40px;
+            align-items: center;
+        }
+
         .title {
             position: absolute;
         }
@@ -109,6 +118,11 @@
             width: 280px;
         }
 
+        .values-title{
+            color: #162a43;
+            font-size: 32px;
+        }
+
         .input-custom {
             border: 2px solid #162a43;
             font-size: 15px !important;
@@ -127,7 +141,6 @@
             justify-content: space-evenly;
             align-items: center;
             font-size: 18px !important;
-            margin-bottom: 300px;
             width: 100%;
         }
 
@@ -178,7 +191,16 @@
         </svg>
     </div>
     <div class="above-all" id="above-all">
-        <div class="values-container" id="infos_div"></div>
+        <div class="info-values-container">
+            <div>
+                <div class="values-title">Today global Values</div>
+                <div class="values-container" id="infos_div"></div>
+            </div>
+            <div>
+                <div class="values-title">Today Greece Values</div>
+                <div class="values-container" id="infos_div_2"></div>
+            </div>
+        </div>
         <div class="infos-container">
             <h1 id="down">Some Infos</h1>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget arcu et enim mattis tristique. Nullam a
@@ -350,6 +372,11 @@
             <div id="chart_div"></div>
             <input type="submit" class="pure-button pure-button-primary" name="search_reg" value="Καταχώρηση στην Βάση">
         </form>
+
+        <form class="custom-form" method="post" id="covid_sumbit_2" action="index.php">
+            <div id="chart_div_2"></div>
+            <input type="submit" class="pure-button pure-button-primary" name="search_reg_2" value="Καταχώρηση στην Βάση">
+        </form>
     </div>
 
     <script>
@@ -403,8 +430,58 @@
                 });
             }
 
+            function fetchVaccinationsGreece() {
+                const url = 'https://en.wikipedia.org/w/api.php?action=parse&format=json&page=COVID-19_pandemic_in_Greece&redirects&prop=text&callback=?'
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    success: function(data) {
+                        const infobox = $(data.parse.text['*']).find('.infobox');
+                        const vaccinations = $(infobox).find('.infobox-label:contains("Vaccinations")').next('.infobox-data').find('li').map(function() {
+                            return $(this).text().replace(/ *\[[^\]]*\]/, '');
+                        }).get();
+                        var label = []
+                        var values = []
+                        var output = '';
+                        var output2 = '';
+                        for (var i = 0; i < vaccinations.length; i++) {
+                            var parts = vaccinations[i].split(/(\([^()]+\))/g).filter(Boolean);
+                            output += '<div>';
+                            for (var j = 0; j < parts.length; j++) {
+                                if (parts[j].startsWith('(')) {
+                                    label.push(parts[j])
+                                    console.log(label)
+                                } else {
+                                    values.push(parts[j])
+                                    console.log(values)
+                                }
+                            }
+                        }
+                        for (var i = 0; i < 3; i++) {
+                            label[i] = label[i].replace(/([()])/g, '')
+                            output += '<label>' + label[i] + '</label><br>'
+                            values[i] = values[i].replace(/[, ]+/g, '')
+                            output += '<input name="' + label[i] + '" id="' + label[i] + '" type="" value=' + values[i] + ' type="number"> <br><br>'
+                        }
+                        output += '</div>';
+
+
+                        $('#chart_div_2').html(output);
+
+                        output2 += '<div>';
+                        for (var i = 0; i < 3; i++) {
+                            output2 += '<span>' + label[i] + '  :  </span>'
+                            output2 += '<span class="value_text">    ' + values[i] + '</span> <br><br>'
+                        }
+                        output2 += '</div>';
+                        $('#infos_div_2').html(output2);
+                    }
+                });
+            }
+
             // Call the fetch function
             fetchVaccinations();
+            fetchVaccinationsGreece();
             // window.setTimeout(function() {
             //   $("input[name=search_reg]").click();
             // } , 5000);

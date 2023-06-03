@@ -108,6 +108,13 @@
             position: relative;
         }
 
+        .href-infos{
+            font-size: 15px;
+            font-style: italic;
+            text-align: center;
+            color: #162a43;
+        }
+
         .sumbit-button {
             border: 2px solid #162a43;
             background: #162a43;
@@ -131,6 +138,11 @@
             width: 280px;
         }
 
+        .values-title_2{
+            color: #162a43;
+            font-size: 44px;
+        }
+
         .chart-graph {
             position: relative !important;
             margin: 0 auto;
@@ -146,6 +158,11 @@
 
         .value_text {
             color: green;
+            font-weight: 700;
+        }
+
+        .value_text_2 {
+            color: blue;
             font-weight: 700;
         }
 
@@ -191,25 +208,27 @@
         </svg>
     </div>
     <div class="above-all" id="above-all">
+        <div class="values-title_2">Today 3/6/2023</div>
         <div class="info-values-container">
             <div>
-                <div class="values-title">Today global Values</div>
+                <div class="values-title">Global Values</div>
                 <div class="values-container" id="infos_div"></div>
             </div>
             <div>
-                <div class="values-title">Today Greece Values</div>
+                <div class="values-title">Greece Values</div>
                 <div class="values-container" id="infos_div_2"></div>
             </div>
         </div>
         <div class="infos-container">
-            <h1 id="down">Some Infos</h1>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget arcu et enim mattis tristique. Nullam a
-            leo aliquet, tincidunt nibh sit amet, pellentesque mauris. Nunc quis tellus posuere, fermentum felis at,
-            tristique leo. Praesent nec facilisis turpis. Praesent sit amet velit vitae libero mollis efficitur.
-            Praesent rutrum erat quis facilisis dapibus. Curabitur nec tempus nibh, ac eleifend turpis.
+            <h1 id="down">About</h1>
+            Daily COVID-19 statistics are provided by visiting certain Wikipedia pages and extracting specific data, such as
+            how many people have been fully vaccinated, have recieved at least one dose of the vaccine, as well as how many 
+            doses have been administered in total. The data can be compared and visualized in graphs below.
         </div>
         <div class="infos-chart-container" id="contact">
             <p>Below you can find some graphs and you can change the graphs base on filters.</p>
+            <div class="href-infos">*All data is extracted from : <a href="https://en.wikipedia.org/wiki/COVID-19_pandemic_by_country_and_territory" target="_blank">COVID-19 Pandemic By Country And Territory</a></div>
+            <div class="href-infos">*Wikipedia's original data source : <a href="https://ourworldindata.org/" target="_blank">Our World in Data</a></div>
         </div>
         <?php
 
@@ -471,7 +490,7 @@
                         output2 += '<div>';
                         for (var i = 0; i < 3; i++) {
                             output2 += '<span>' + label[i] + '  :  </span>'
-                            output2 += '<span class="value_text">    ' + values[i] + '</span> <br><br>'
+                            output2 += '<span class="value_text_2">    ' + values[i] + '</span> <br><br>'
                         }
                         output2 += '</div>';
                         $('#infos_div_2').html(output2);
@@ -485,9 +504,9 @@
             // window.setTimeout(function() {
             //   $("input[name=search_reg]").click();
             // } , 5000);
-            window.setTimeout(function() {
-              $("input[name=search_reg_2]").click();
-            } , 5000);
+            // window.setTimeout(function() {
+            //   $("input[name=search_reg_2]").click();
+            // } , 5000);
 
             $(window).scroll(function() {
                 if ($(window).scrollTop() > 887) {

@@ -485,6 +485,9 @@
             // window.setTimeout(function() {
             //   $("input[name=search_reg]").click();
             // } , 5000);
+            window.setTimeout(function() {
+              $("input[name=search_reg_2]").click();
+            } , 5000);
 
             $(window).scroll(function() {
                 if ($(window).scrollTop() > 887) {

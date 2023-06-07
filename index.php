@@ -388,3 +388,53 @@ $(document).ready(function() {
       });
     }
   }); -->
+
+
+
+  <!-- 
+
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>COVID-19 Crawler</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>COVID-19 Crawler</h1>
+  <script>
+    function getCovidData() {
+      const apiUrl = 'https://en.wikipedia.org/w/api.php?action=parse&format=json&page=COVID-19_pandemic_by_country_and_territory&redirects&prop=text&callback=?';
+
+      $.ajax({
+        url: apiUrl,
+        dataType: 'jsonp',
+        success: function(response) {
+          // Extract the HTML content from the response
+          const html = response.parse.text['*'];
+
+          // Create a temporary div element to parse the HTML
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+
+          // Find the link for Greece in the HTML content
+          const greeceLink = tempDiv.querySelector('a[title="COVID-19 pandemic in Greece"]');
+          
+          if (greeceLink) {
+            const link = greeceLink.getAttribute('href');
+            const greeceFullLink = `https://en.wikipedia.org${link}`;
+            console.log('Link for Greece:', greeceFullLink);
+          } else {
+            console.log('Link for Greece not found.');
+          }
+        },
+        error: function(error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+
+    getCovidData();
+  </script>
+</body>
+</html>
+   -->

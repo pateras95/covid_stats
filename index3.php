@@ -89,7 +89,7 @@
             z-index: 2;
         }
 
-        .info-values-container{
+        .info-values-container {
             display: flex !important;
             justify-content: center;
             column-gap: 40px;
@@ -108,7 +108,7 @@
             position: relative;
         }
 
-        .href-infos{
+        .href-infos {
             font-size: 15px;
             font-style: italic;
             text-align: center;
@@ -125,7 +125,7 @@
             width: 280px;
         }
 
-        .values-title{
+        .values-title {
             color: #162a43;
             font-size: 32px;
         }
@@ -138,7 +138,7 @@
             width: 280px;
         }
 
-        .values-title_2{
+        .values-title_2 {
             color: #162a43;
             font-size: 44px;
         }
@@ -164,6 +164,13 @@
         .value_text_2 {
             color: blue;
             font-weight: 700;
+        }
+
+        .class-charts {
+            display: flex;
+            justify-content: space-evenly;
+            column-gap: 1rem;
+            align-items: center;
         }
 
         @media screen and (max-width: 997px) {
@@ -222,14 +229,56 @@
         <div class="infos-container">
             <h1 id="down">About</h1>
             Daily COVID-19 statistics are provided by visiting certain Wikipedia pages and extracting specific data, such as
-            how many people have been fully vaccinated, have recieved at least one dose of the vaccine, as well as how many 
+            how many people have been fully vaccinated, have recieved at least one dose of the vaccine, as well as how many
             doses have been administered in total. The data can be compared and visualized in graphs below.
         </div>
         <div class="infos-chart-container" id="contact">
-            <p>Below you can find some graphs and you can change the graphs base on filters.</p>
             <div class="href-infos">*All data is extracted from : <a href="https://en.wikipedia.org/wiki/COVID-19_pandemic_by_country_and_territory" target="_blank">COVID-19 Pandemic By Country And Territory</a></div>
             <div class="href-infos">*Wikipedia's original data source : <a href="https://ourworldindata.org/" target="_blank">Our World in Data</a></div>
+            <p style="margin-top: 250px;">Below you can find some graphs and you can change the graphs based on filters.You can select a field (Total vaccinated, Fully vaccinated, Doses Administered), a date and the type of graph to see how the values change globally in that time period.</p>
         </div>
+
+        <script type="text/javascript">
+            google.charts.load("current", {
+                packages: ["corechart"]
+            });
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ["Element", "Density", {
+                        role: "style"
+                    }],
+                    ["Greece Growth Rate (Doses Administered)", 0.06, "blue"],
+                    ["Global Growth Rate (Doses Administered)", 0.01, "green"],
+                ]);
+
+                var view = new google.visualization.DataView(data);
+                view.setColumns([0, 1,
+                    {
+                        calc: "stringify",
+                        sourceColumn: 1,
+                        type: "string",
+                        role: "annotation"
+                    },
+                    2
+                ]);
+
+                var options = {
+                    title: "Growth Rate (Doses Administered)",
+                    width: 600,
+                    height: 200,
+                    bar: {
+                        groupWidth: "95%"
+                    },
+                    legend: {
+                        position: "none"
+                    },
+                };
+                var chart = new google.visualization.BarChart(document.getElementById("barchart_values"));
+                chart.draw(view, options);
+            }
+        </script>
         <?php
 
         $servername = "localhost";
@@ -279,8 +328,14 @@
         }
         ?>
         <div class="chart-graph" id="piechart"></div>
-
-
+        <div class="infos-chart-container" id="contact">
+            <p>The graph comparing the global growth rate of doses administered and Greece's growth rate of doses administered.</p>
+            <div class="class-charts">
+                <div>Greece Growth Rate :<span style="color:blue"> 15.000</span></div>
+                <div>Global Growth Rate :<span style="color:green"> 1.360.000</span></div>
+            </div>
+        </div>
+        <div id="barchart_values" style="margin:0 auto; width: 600px; height: 300px;"></div>
         <script type="text/javascript">
             google.charts.load('current', {
                 'packages': ['corechart']
@@ -370,7 +425,7 @@
                         ]);
 
                         var options = {
-                            title: 'Chart',
+                            title: 'Chart displaing <?php echo $selected_val ?> globally.',
                             width: 900,
                             height: 500,
                             curveType: 'function',
@@ -503,8 +558,6 @@
             fetchVaccinationsGreece();
             // window.setTimeout(function() {
             //   $("input[name=search_reg]").click();
-            // } , 5000);
-            // window.setTimeout(function() {
             //   $("input[name=search_reg_2]").click();
             // } , 5000);
 
